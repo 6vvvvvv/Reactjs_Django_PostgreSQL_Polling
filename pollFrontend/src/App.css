@@ -1,0 +1,39 @@
+.container {
+  width: 350px;
+  height: 450px;
+  margin: 0 auto;
+  text-align: left;
+  margin-top: 100px;
+  justify-content: center;
+}
+
+.container > div {
+  margin:0 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.2);
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+div p{
+  text-align: center;
+  margin-top:10px;
+  margin-bottom: 10px;
+}
+
+.btn {
+  width:100%;
+  margin-top: 5px;
+}
+
+.question {
+  text-align:center;
+  font-weight: bold;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.progess {
+  margin: auto;
+  width: auto;
+}
