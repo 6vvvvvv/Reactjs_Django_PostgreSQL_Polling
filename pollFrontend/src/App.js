@@ -125,7 +125,7 @@ class App extends Component {
         </div>
 
         <GithubCorner
-          href="https://github.com/6vvvvvv/Reactjs_Django_Poll"
+          href="https://github.com/6vvvvvv/Reactjs_Django_Polling"
           bannerColor="#303030"
           size={80}
           direction="right"
