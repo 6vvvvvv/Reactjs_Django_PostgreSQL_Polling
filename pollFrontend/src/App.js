@@ -3,9 +3,8 @@ import GithubCorner from "react-github-corner";
 import "./App.css";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { connect } from "react-redux";
-import { polling_tobackend } from "./redux/thunk/pollingThunk";
+import { polling_tobackend, polling_initial } from "./redux/thunk/pollingThunk";
 import { getPollingAnswers } from "./redux/reducers/pollingReducer";
-// import EditableLabel from 'react-inline-editing';
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +19,10 @@ class App extends Component {
       changeContent: "",
     };
   }
+
+  componentDidMount = () => {
+    this.props.polling_initial();
+  };
 
   textChange = (e) => {
     this.setState({
@@ -43,38 +46,33 @@ class App extends Component {
       this.props.polling_tobackend([selectid, this.state.changeContent]);
     }
   };
-  
 
   render() {
-    // console.log("*********clickcount", this.state.clickcount);
-    // console.log("---------editContent", this.state.editContent);
-    // console.log("*********isEdited", this.state.isEdited);
-    // console.log("---------changecontent", this.state.changeContent);
-    // console.log("*********pollanswer", this.props.pollingAnswers);
- 
+    const { pollingAnswers } = this.props;
+    var greenBarPer = parseFloat(
+      (pollingAnswers[0].vote /
+        (pollingAnswers[0].vote +
+          pollingAnswers[1].vote +
+          pollingAnswers[2].vote)) *
+        100
+    ).toFixed(2);
+    var yellowBarPer = parseFloat(
+      (pollingAnswers[1].vote /
+        (pollingAnswers[0].vote +
+          pollingAnswers[1].vote +
+          pollingAnswers[2].vote)) *
+        100
+    ).toFixed(2);
+    var redBarPer = parseFloat(
+      (pollingAnswers[2].vote /
+        (pollingAnswers[0].vote +
+          pollingAnswers[1].vote +
+          pollingAnswers[2].vote)) *
+        100
+    ).toFixed(2);
 
-    // const { pollingAnswers } = this.props;
-    // var greenBarPer = parseFloat(
-    //   (pollingAnswers[0].vote /
-    //     (pollingAnswers[0].vote +
-    //       pollingAnswers[1].vote +
-    //       pollingAnswers[2].vote)) *
-    //     100
-    // ).toFixed(2);
-    // var yellowBarPer = parseFloat(
-    //   (pollingAnswers[1].vote /
-    //     (pollingAnswers[0].vote +
-    //       pollingAnswers[1].vote +
-    //       pollingAnswers[2].vote)) *
-    //     100
-    // ).toFixed(2);
-    // var redBarPer = parseFloat(
-    //   (pollingAnswers[2].vote /
-    //     (pollingAnswers[0].vote +
-    //       pollingAnswers[1].vote +
-    //       pollingAnswers[2].vote)) *
-    //     100
-    // ).toFixed(2);
+    const totalVotes =
+      pollingAnswers[0].vote + pollingAnswers[1].vote + pollingAnswers[2].vote;
 
     return (
       <div className="container">
@@ -101,7 +99,10 @@ class App extends Component {
                         key={id}
                         type="button"
                         className="btn btn-outline-primary"
-                        onClick={this.props.polling_tobackend.bind(this,[id,item.option])}
+                        onClick={this.props.polling_tobackend.bind(this, [
+                          id,
+                          item.option,
+                        ])}
                       >
                         {item.option}
                       </button>
@@ -110,7 +111,7 @@ class App extends Component {
                     <span>
                       <i
                         className="fas fa-cogs"
-                        onClick={this.inputchange.bind(this,id)}
+                        onClick={this.inputchange.bind(this, id)}
                       ></i>
                     </span>
                   </div>
@@ -118,10 +119,10 @@ class App extends Component {
               })}
             </div>
           </div>
-          <p>Total Vote : {this.state.totalVotes}</p>
+          <p>Total Vote : {totalVotes}</p>
         </div>
         <hr></hr>
-        {/* <div className="progess">
+        <div className="progess">
           <div>
             <ProgressBar
               animated
@@ -145,10 +146,8 @@ class App extends Component {
               label={`${redBarPer}%`}
             />
           </div>
-        </div> */}
-        <button onClick={this.props.polling_tobackend.bind(this, "test")}>
-          test
-        </button>
+        </div>
+
         <GithubCorner
           href="https://github.com/6vvvvvv/Reactjs_Django_Polling"
           bannerColor="#303030"
@@ -166,5 +165,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   polling_tobackend: (optiondata) => dispatch(polling_tobackend(optiondata)),
+  polling_initial: () => dispatch(polling_initial()),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,8 +1,7 @@
 import axios from "axios";
-import { add_option, alter_option } from "../actions/pollingActionCreator";
+import { alter_option } from "../actions/pollingActionCreator";
 
 export const polling_tobackend = (optiondata) => {
-  console.log("^^^^^^optiondata", optiondata);
   return (dispatch, getState) => {
     axios
       .post(
@@ -11,8 +10,17 @@ export const polling_tobackend = (optiondata) => {
         { headers: { "Content-Type": "application/json" } }
       )
       .then((res) => {
-        console.log("---------res", res.data);
+        console.log("---------polling_tobackend", res.data);
         dispatch(alter_option(res.data));
       });
+  };
+};
+
+export const polling_initial = () => {
+  return (dispatch, getState) => {
+    axios.get("http://localhost:8000/api/initial/").then((res) => {
+      console.log("---------polling_initial", res.data);
+      dispatch(alter_option(res.data));
+    });
   };
 };

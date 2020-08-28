@@ -12,7 +12,9 @@ def initial(request):
     option_1.save()
     option_2.save()
 
-    return JsonResponse({"msg": "success"})
+    pollanswer = Polling.objects.all().values()
+
+    return JsonResponse({"msg": "success", "tofrontend": list(pollanswer)})
 
 
 def polling(request):
@@ -112,7 +114,7 @@ def polling(request):
 
                     Polling.objects.filter(pk=2).update(
                         rate=new_option_2_rate)
-                    
+
                     pollanswer = Polling.objects.all().values()
 
                     return JsonResponse({"msg": "success", "tofrontend": list(pollanswer)})

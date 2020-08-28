@@ -1,4 +1,4 @@
-import {  ALTER } from "../actions/action-types/polling-actions";
+import { ALTER } from "../actions/action-types/polling-actions";
 
 const initialState = {
   pollingAnswers: [
@@ -12,7 +12,6 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-
     case ALTER:
       const newpollingAnswers = state.pollingAnswers.map((item, id) => {
         action.payload.tofrontend.map((t) => {
@@ -30,7 +29,11 @@ export default (state = initialState, action) => {
         });
         return item;
       });
-      return { ...state, pollingAnswers: newpollingAnswers };
+
+      return {
+        ...state,
+        pollingAnswers: newpollingAnswers,
+      };
 
     default:
       return state;
@@ -38,5 +41,3 @@ export default (state = initialState, action) => {
 };
 
 export const getPollingAnswers = (state) => state.pollingAnswers;
-export const getTotalVotes = (state) => state.totalVotes;
-
