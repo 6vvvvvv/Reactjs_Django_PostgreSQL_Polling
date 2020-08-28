@@ -2,103 +2,126 @@ import React, { Component } from "react";
 import GithubCorner from "react-github-corner";
 import "./App.css";
 import ProgressBar from "react-bootstrap/ProgressBar";
-
+import { connect } from "react-redux";
+import { polling_tobackend } from "./redux/thunk/pollingThunk";
+import { getPollingAnswers } from "./redux/reducers/pollingReducer";
+// import EditableLabel from 'react-inline-editing';
 
 class App extends Component {
   constructor(props) {
     super(props);
-
+    this.inputBlur = React.createRef();
     this.state = {
+      clickcount: 0,
+      text: "",
+      isEdited: false,
+      editContent: undefined,
       pollQuestion: "Which one would you like choose?",
-      pollAnswers: [
-        { option: "Angular", vote: 0 },
-        { option: "React", vote: 0 },
-        { option: "Vue", vote: 0 }
-      ],
-      totalVotes: 0
+      changeContent: "",
     };
   }
 
-  // In case control through backend
-  // async componentDidMount() {
-  //   try {
-  //     const res1 = await fetch("http://127.0.0.1:8000/api/option"); // fetching the data from api, before the page loaded
-  //     const polloption = await res1.json();
-  //     let polloption1=JSON.parse(JSON.stringify(polloption))
-
-  //     const res2 = await fetch("http://127.0.0.1:8000/api/title"); 
-  //     const polltitle = await res2.json();
-      
-  //     this.setState({
-  //       pollAnswers: polloption1,
-  //       pollQuestion:polltitle[0]["title"]
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
-
-  //tranfer id from method bind id in main
-  vote = id => {
-    //add
-    let newPollAnswers = this.state.pollAnswers.map((el)=>(el));
-    newPollAnswers[id].vote++;
-
-    let tmp = this.state.pollAnswers.map(el => el.vote);
-    let newtotalVotes = tmp.reduce((total, amount) => total + amount);
-
+  textChange = (e) => {
     this.setState({
-      pollAnswers: newPollAnswers,
-      totalVotes: newtotalVotes
+      text: e.target.value,
+      changeContent: e.target.value,
     });
   };
 
+  vote = (id) => {
+    console.log("vote", id);
+  };
+
+  inputchange = (selectid) => {
+    this.setState({
+      clickcount: this.state.clickcount + 1,
+      isEdited: !this.state.isEdited,
+      editContent: selectid,
+    });
+
+    if (this.state.clickcount % 2) {
+      this.props.polling_tobackend([selectid, this.state.changeContent]);
+    }
+  };
+  
+
   render() {
-    const { pollAnswers } = this.state;
-    var greenBarPer = parseFloat(
-      (pollAnswers[0].vote /
-        (pollAnswers[0].vote + pollAnswers[1].vote + pollAnswers[2].vote)) *
-        100
-    ).toFixed(2);
-    var yellowBarPer = parseFloat(
-      (pollAnswers[1].vote /
-        (pollAnswers[0].vote + pollAnswers[1].vote + pollAnswers[2].vote)) *
-        100
-    ).toFixed(2);
-    var redBarPer = parseFloat(
-      (pollAnswers[2].vote /
-        (pollAnswers[0].vote + pollAnswers[1].vote + pollAnswers[2].vote)) *
-        100
-    ).toFixed(2);
+    // console.log("*********clickcount", this.state.clickcount);
+    // console.log("---------editContent", this.state.editContent);
+    // console.log("*********isEdited", this.state.isEdited);
+    // console.log("---------changecontent", this.state.changeContent);
+    // console.log("*********pollanswer", this.props.pollingAnswers);
+ 
+
+    // const { pollingAnswers } = this.props;
+    // var greenBarPer = parseFloat(
+    //   (pollingAnswers[0].vote /
+    //     (pollingAnswers[0].vote +
+    //       pollingAnswers[1].vote +
+    //       pollingAnswers[2].vote)) *
+    //     100
+    // ).toFixed(2);
+    // var yellowBarPer = parseFloat(
+    //   (pollingAnswers[1].vote /
+    //     (pollingAnswers[0].vote +
+    //       pollingAnswers[1].vote +
+    //       pollingAnswers[2].vote)) *
+    //     100
+    // ).toFixed(2);
+    // var redBarPer = parseFloat(
+    //   (pollingAnswers[2].vote /
+    //     (pollingAnswers[0].vote +
+    //       pollingAnswers[1].vote +
+    //       pollingAnswers[2].vote)) *
+    //     100
+    // ).toFixed(2);
 
     return (
       <div className="container">
-        {/* {this.state.pollAnswers} */}
         <div>
           <div>
             <div className="question">
               <p>{this.state.pollQuestion}</p>
             </div>
             <div>
-              {this.state.pollAnswers.map((el, id) => (
-                <div>
-                  <button
-                    key={id}
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onClick={this.vote.bind(this, id)}
-                  >
-                    {el.option}
-                  </button>
-                
-                </div>
-              ))}
+              {this.props.pollingAnswers.map((item, id) => {
+                return (
+                  <div key={id}>
+                    {this.state.isEdited && id === this.state.editContent ? (
+                      <input
+                        ref={this.inputBlur}
+                        className="input"
+                        type="text"
+                        value={this.state.text}
+                        onChange={this.textChange}
+                        placeholder="Enter new option..."
+                      ></input>
+                    ) : (
+                      <button
+                        key={id}
+                        type="button"
+                        className="btn btn-outline-primary"
+                        onClick={this.props.polling_tobackend.bind(this,[id,item.option])}
+                      >
+                        {item.option}
+                      </button>
+                    )}
+
+                    <span>
+                      <i
+                        className="fas fa-cogs"
+                        onClick={this.inputchange.bind(this,id)}
+                      ></i>
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <p>Total Vote : {this.state.totalVotes}</p>
         </div>
         <hr></hr>
-        <div className="progess">
+        {/* <div className="progess">
           <div>
             <ProgressBar
               animated
@@ -122,8 +145,10 @@ class App extends Component {
               label={`${redBarPer}%`}
             />
           </div>
-        </div>
-
+        </div> */}
+        <button onClick={this.props.polling_tobackend.bind(this, "test")}>
+          test
+        </button>
         <GithubCorner
           href="https://github.com/6vvvvvv/Reactjs_Django_Polling"
           bannerColor="#303030"
@@ -135,4 +160,11 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  pollingAnswers: getPollingAnswers(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  polling_tobackend: (optiondata) => dispatch(polling_tobackend(optiondata)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(App);

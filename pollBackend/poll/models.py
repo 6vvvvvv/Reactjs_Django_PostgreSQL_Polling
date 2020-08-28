@@ -1,15 +1,18 @@
 from django.db import models
 
 
-
-class Pollingoption(models.Model):
-    option = models.CharField(max_length=100)
-    vote = models.IntegerField(default="0")
-
-
-class Pollingtitle(models.Model):
-    title = models.CharField(max_length=100)
+class Polling(models.Model):
+    id = models.IntegerField(
+        primary_key=True, unique=True)
+    option = models.CharField(max_length=30, default="")
+    vote = models.IntegerField()
+    rate = models.FloatField()
 
     def __str__(self):
-        """A string representation of the model."""
-        return self.title
+        return self.option
+
+    @classmethod
+    def create_polling(cls, id, option, vote, rate):
+        alternative = cls(
+            id=id, option=option, vote=vote, rate=rate)
+        return alternative

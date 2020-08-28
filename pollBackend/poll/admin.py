@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Pollingoption, Pollingtitle
+from .models import Polling
 
 # Register your models here.
-myModels=[Pollingoption, Pollingtitle]
-admin.site.register(myModels)
+admin.site.register(Polling)
