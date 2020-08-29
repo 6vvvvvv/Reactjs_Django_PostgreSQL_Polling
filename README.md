@@ -26,8 +26,7 @@
 ## 8:Click And Change State After Option1 Changed To "4"
 ![image](https://github.com/6vvvvvv/Reactjs_Django_Polling/blob/master/img/8.jpg)
 
-## 9:Database State Synchronizes
-![image](https://github.com/6vvvvvv/Reactjs_Django_Polling/blob/master/img/9.jpg)
+## 9:Repeat
 
 
 
