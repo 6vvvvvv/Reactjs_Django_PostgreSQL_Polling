@@ -1,4 +1,4 @@
-# Reactjs_Django_Polling
+# Reactjs_Django_PostgreSQL_Polling
 
 ## Make sure you are under vituralenvironment(pipenv shell) when run Backend code. 
  
